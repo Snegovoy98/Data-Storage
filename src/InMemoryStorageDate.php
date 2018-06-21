@@ -1,13 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Admin
- * Date: 21.06.2018
- * Time: 15:27
- */
-namespace App\InMemoryStorageDate;
-require __DIR__ . '/KeyValueStorageInterface .php';
 
+namespace App\InMemoryStorageDate;
+require_once __DIR__ . '/KeyValueStorageInterface.php';
 use KeyValueStorageInterface;
 
 class InMemoryStorageDate implements KeyValueStorageInterface
