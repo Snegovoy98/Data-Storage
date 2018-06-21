@@ -6,37 +6,40 @@
  * Time: 15:27
  */
 namespace App\InMemoryStorageDate;
-require __DIR__.'/KeyValueStorage.php';
+require __DIR__ . '/KeyValueStorageInterface .php';
 
-use KeyValueStorage;
+use KeyValueStorageInterface;
 
-class InMemoryStorageDate implements KeyValueStorage
+class InMemoryStorageDate implements KeyValueStorageInterface
 {
     private $storage =[];
-    public function set($key,$value)
+
+
+    public function set(string $key, string $value)
     {
         $this->storage[$key]=$value;
     }
 
-    public function get($key)
+    public function get(string $key):string
     {
-        if(isset($this->storage[$key])){
-            return $this->storage[$key];
-        }
-        return null;
+       $this->storage = $this->storage[$key] ?? false;
+       return $this->storage;
     }
-    public function has($key)
+    public function has(string $key)
     {
-        if (isset($this->storage[$key])){
-            return 'key isset '.PHP_EOL;
-        }
-        return new \Exception('key not found'.PHP_EOL);
+       return isset($this->storage[$key]);
     }
 
-    public function remove($key)
+    public function remove(string $key)
     {
-        if (isset($this->storage[$key])){
-            unset($this->storage[$key]);
+        if ($this->has($key)){
+            unset($this->storage[$key] );
         }
+
+
+    }
+    public function clear()
+    {
+        return $this->storage=[];
     }
 }

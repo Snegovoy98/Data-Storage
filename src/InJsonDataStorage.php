@@ -1,10 +1,10 @@
 <?php
 
 namespace App\InJsonDataStorage;
-require __DIR__.'/KeyValueStorage.php';
-use KeyValueStorage;
+require __DIR__ . '/KeyValueStorageInterface .php';
+use KeyValueStorageInterface;
 
-class InJsonDataStorage implements KeyValueStorage
+class InJsonDataStorage implements KeyValueStorageInterface
 {
     private $storage =[];
     public function set($key,$value)
@@ -40,5 +40,10 @@ class InJsonDataStorage implements KeyValueStorage
         if (isset($this->storage[$key])){
             unset($this->storage[$key]);
         }
+    }
+
+    public function clear()
+    {
+        $this->storage=[];
     }
 }
