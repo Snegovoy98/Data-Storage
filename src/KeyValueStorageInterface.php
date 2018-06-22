@@ -3,12 +3,16 @@
 
 interface KeyValueStorageInterface
 {
-    public function set(string $key, string$value);
-    public function get(string $key);
-    public function has(string $key);
-    public function remove(string $key);
-    public function clear();
 
+    public function set(string $key, $value):void ;
+
+    public function get(string $key);
+
+    public function has(string $key):bool;
+
+    public function remove(string $key):void;
+
+    public function clear():void;
 
 
 }

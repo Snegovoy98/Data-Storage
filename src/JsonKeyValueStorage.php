@@ -1,46 +1,49 @@
 <?php
 
 namespace App\JsonKeyValueStorage;
-require __DIR__ . '/KeyValueStorageInterface.php';
+
+require_once __DIR__ . '/KeyValueStorageInterface.php';
+
 use KeyValueStorageInterface;
 
 class JsonKeyValueStorage implements KeyValueStorageInterface
 {
     private $storage =[];
+
     private $pathToFile;
+
     public function __construct(string $pathToFile)
     {
         $this->pathToFile = $pathToFile;
     }
 
-    public function set(string $key, string $value)
+    public function set(string $key, $value):void
     {
         $this->storage[$key]=$value;
        $this->writeToFile($this->storage[$key]);
     }
 
-    public function get(string $key):string
+    public function get(string $key)
     {
-           if(isset($this->storage[$key])){
-            return $this->storage[$key];
-        }
-        return null;
+
+            return $this->storage[$key] ?? 'key not found';
+
     }
+
     public function has(string $key):bool
     {
         $this->storage=$this->decodeData();
-       if ($this->storage[$key]){
-           return $this->storage[$key];
-       }
-
+        return $this->storage[$key]?? 'key not found';
     }
-    public function remove(string $key)
+
+    public function remove(string $key):void
     {
         if ($this->has($key)){
             unset($this->storage[$key]);
         }
     }
-    public function clear()
+
+    public function clear():void
     {
         $this->storage=[];
     }
@@ -49,10 +52,12 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     {
         return json_encode($string);
     }
+
     private function writeToFile(string $string)
     {
         file_put_contents($this->pathToFile,$this->encodeData($string));
     }
+
     private function readFromFile()
     {
         return file_get_contents($this->pathToFile);
