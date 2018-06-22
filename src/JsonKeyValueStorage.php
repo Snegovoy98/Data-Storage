@@ -26,14 +26,14 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     public function get(string $key)
     {
 
-            return $this->storage[$key] ?? 'key not found';
+         return $this->storage[$key];
 
     }
 
     public function has(string $key):bool
     {
         $this->storage=$this->decodeData();
-        return $this->storage[$key]?? 'key not found';
+        return $this->storage[$key]?? false;
     }
 
     public function remove(string $key):void
