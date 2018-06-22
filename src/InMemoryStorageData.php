@@ -6,7 +6,7 @@ require_once __DIR__ . '/KeyValueStorageInterface.php';
 
 use  KeyValueStorageInterface;
 
-class InMemoryStorageDate implements KeyValueStorageInterface
+class InMemoryStorageData implements KeyValueStorageInterface
 {
 
     private $storage =[];
