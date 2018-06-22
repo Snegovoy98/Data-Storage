@@ -1,8 +1,6 @@
 <?php
 
-namespace App\JsonKeyValueStorage;
-
-require_once __DIR__ . '/KeyValueStorageInterface.php';
+namespace App;
 
 use KeyValueStorageInterface;
 

@@ -1,17 +1,23 @@
 <?php
+namespace App;
+require_once '../vendor/autoload.php';
 
-require_once __DIR__ . '/InMemoryStorageData.php';
+use \InMemoryStorageData;
+use \JsonKeyValueStorage;
+use \YmlKeyValueStorage;
 
-require_once __DIR__. '/JsonKeyValueStorage.php';
-
-$storage = new \App\InMemoryStorageDate\InMemoryStorageData();
+$storage = new InMemoryStorageData();
 
 $storage->set('name','Max');
 
 $storage->clear();
 
-$storageJson = new \App\JsonKeyValueStorage\JsonKeyValueStorage('../data/storage.json');
+$storageJson = new JsonKeyValueStorage('../data/storage.json');
 
 $storageJson->set('name','Ivan');
 
-echo $storageJson->has('username');
+$storageJson->has('username');
+
+$storageYml = new YmlKeyValueStorage('../data/storage.yaml');
+
+$storageYml->set('name','Ivan');

@@ -1,8 +1,6 @@
 <?php
 
-namespace App\InMemoryStorageDate;
-
-require_once __DIR__ . '/KeyValueStorageInterface.php';
+namespace App;
 
 use  KeyValueStorageInterface;
 
