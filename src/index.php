@@ -1,38 +1,40 @@
 <?php
-namespace App;
+
 require_once '../vendor/autoload.php';
 
 use App\{InMemoryStorageData,JsonKeyValueStorage,YmlKeyValueStorage};
 
-
 $storage = new InMemoryStorageData();
 
-$storage->set('name','Max');
+$storage->set('object', new class{});
 
-$storage->clear();
+ $storage->remove('object');
 
-$storageJson = new JsonKeyValueStorage('../data/storage.json');
-
-$storageJson->set('name','Ivan');
+ echo $storage->get('object');
 
 
 
-$storageJson->clear();
 
-$storageJson->get('name');
 
-$storageYml = new YmlKeyValueStorage('../data/storage.yaml');
 
-$storageYml->set('name','Ivan');
 
-$storageYml->get('name');
 
-$storageYml->has('name');
 
-$storageYml->remove('name');
 
-$storageYml->has('name');
 
-$storageYml->clear();
 
-$storageYml->get('name');
+
+
+
+
+
+
+
+
+
+
+
+//$storageJson = new JsonKeyValueStorage('../data/storage.json');
+
+//$storageYml = new YmlKeyValueStorage('../data/storage.yaml');
+

@@ -1,35 +1,39 @@
 <?php
-
 namespace App;
 
 use  App\KeyValueStorageInterface;
 
 class InMemoryStorageData implements KeyValueStorageInterface
 {
-
-    private $storage =[];
-
+    private $storage = [];
 
     public function set(string $key, $value):void
     {
-        $this->storage[$key]=$value;
+        $this->storage[$key]= $value;
     }
 
     public function get(string $key)
     {
-        return  $this->storage[$key] ?? false;
-
+       if (isset($key)){
+          return $this->storage[$key];
+       } else {
+           return 'key not found';
+       }
     }
 
     public function has(string $key):bool
     {
-       return $this->storage[$key]?? false;
+       if (isset($key)) {
+           return true;
+       } else {
+           return false;
+       }
     }
 
     public function remove(string $key):void
     {
-        if ($this->has($key)){
-            unset($this->storage[$key] );
+        if ($this->has($key)) {
+            unset($this->storage[$key]);
         }
     }
 
@@ -37,5 +41,4 @@ class InMemoryStorageData implements KeyValueStorageInterface
     {
          $this->storage=[];
     }
-
 }
