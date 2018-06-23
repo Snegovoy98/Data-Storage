@@ -2,9 +2,11 @@
 
 namespace App;
 
-use KeyValueStorageInterface;
+use App\KeyValueStorageInterface;
 
 use Symfony\Component\Yaml\Yaml;
+
+use Symfony\Component\Yaml\Exception\ParseException;
 
 class YmlKeyValueStorage implements KeyValueStorageInterface
 {
@@ -27,26 +29,49 @@ class YmlKeyValueStorage implements KeyValueStorageInterface
 
     public function get (string $key)
     {
-        $this->storage=$this->parseYmlInPHP();
 
         return $this->storage[$key] ?? 'key not found';
     }
 
     public function has (string  $key):bool
     {
+        $this->storage=$this->parseYmlInPHP();
+
         return $this->storage[$key] ?? false;
     }
 
     public function remove (string $key):void
     {
         if ($this->has($key)){
+
             unset($this->storage[$key]);
+
+            $fp =fopen($this->pathToFile,'w+');
+
+            foreach ($this->storage as $key_data=> $data){
+
+                if ($key_data==$key){
+
+                    unset($key_data,$data);
+                }
+            }
+            fclose($fp);
+
         }
     }
 
     public function clear ():void
     {
         $this->storage =[];
+
+        $fp =fopen($this->pathToFile,'w+');
+
+        foreach ($this->storage as $key_data=> $data){
+
+                unset($key_data,$data);
+
+        }
+        fclose($fp);
     }
 
     private function dumpInYml(array $array)
@@ -61,11 +86,8 @@ class YmlKeyValueStorage implements KeyValueStorageInterface
 
     private function parseYmlInPHP()
     {
-        $array = Yaml::parseFile($this->readFromFile());
+      return Yaml::parseFile($this->pathToFile);
     }
 
-    private function readFromFile()
-    {
-        return file_get_contents($this->pathToFile);
-    }
+
 }

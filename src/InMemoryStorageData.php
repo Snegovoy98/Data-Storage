@@ -2,7 +2,7 @@
 
 namespace App;
 
-use  KeyValueStorageInterface;
+use  App\KeyValueStorageInterface;
 
 class InMemoryStorageData implements KeyValueStorageInterface
 {

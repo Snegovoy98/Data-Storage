@@ -2,7 +2,7 @@
 
 namespace App;
 
-use KeyValueStorageInterface;
+use App\KeyValueStorageInterface;
 
 class JsonKeyValueStorage implements KeyValueStorageInterface
 {
@@ -18,19 +18,20 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     public function set(string $key, $value):void
     {
         $this->storage[$key]=$value;
-       $this->writeToFile($this->storage[$key]);
+       $this->writeToFile($this->storage);
     }
 
     public function get(string $key)
     {
 
-         return $this->storage[$key];
+         return $this->storage[$key] ?? 'key not found';
 
     }
 
     public function has(string $key):bool
     {
         $this->storage=$this->decodeData();
+
         return $this->storage[$key]?? false;
     }
 
@@ -38,22 +39,41 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     {
         if ($this->has($key)){
             unset($this->storage[$key]);
+            $fp =fopen($this->pathToFile,'w+');
+            foreach ($this->storage as $key_data=> $data){
+                if ($key_data==$key){
+                    unset($key_data,$data);
+                }
+            }
+            fclose($fp);
         }
     }
 
     public function clear():void
     {
         $this->storage=[];
+
+        $fp =fopen($this->pathToFile,'w+');
+
+        foreach ($this->storage as $key_data=> $data){
+
+                unset($key_data,$data);
+
+        }
+
+        fclose($fp);
+
     }
 
-    private function encodeData(string $string)
+
+    private function encodeData(array $array)
     {
-        return json_encode($string);
+        return json_encode($array);
     }
 
-    private function writeToFile(string $string)
+    private function writeToFile(array $array)
     {
-        file_put_contents($this->pathToFile,$this->encodeData($string));
+        file_put_contents($this->pathToFile,$this->encodeData($array));
     }
 
     private function readFromFile()
