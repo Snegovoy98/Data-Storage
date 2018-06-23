@@ -79,7 +79,7 @@ class YmlKeyValueStorage implements KeyValueStorageInterface
        return Yaml::dump($array,1);
     }
 
-    private function writeToFile(array $array)
+    private function writeToFile(array $array):void
     {
         file_put_contents($this->pathToFile,$this->dumpInYml($array));
     }
