@@ -1,0 +1,13 @@
+{
+    "name": "admin/data-storage",
+    "type": "project",
+    "minimum-stability": "stable",
+    "require": {
+        "symfony/yml": "^4.1"
+    },
+    "autoload":{
+        "psr-4":{
+            "App\\":"src/"
+        }
+    }
+}
