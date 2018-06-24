@@ -1,9 +1,9 @@
 <?php
+
 namespace App;
 
 interface KeyValueStorageInterface
 {
-
     public function set(string $key, $value):void ;
 
     public function get(string $key);
@@ -13,6 +13,4 @@ interface KeyValueStorageInterface
     public function remove(string $key):void;
 
     public function clear():void;
-
-
 }
