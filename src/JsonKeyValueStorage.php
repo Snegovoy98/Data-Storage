@@ -22,13 +22,22 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
 
     public function get(string $key)
     {
-         return $this->storage[$key] ?? 'key not found';
+         if ($this->has($key)) {
+             return $this->convertToString($this->storage[$key]);
+         } else {
+             return 'key not found';
+         }
     }
 
     public function has(string $key):bool
     {
+
         $this->storage=$this->decodeData();
-        return $this->storage[$key] ?? false;
+       if (isset($this->storage[$key])) {
+            return true;
+       } else {
+            return false;
+       }
     }
 
     public function remove(string $key):void
@@ -68,10 +77,25 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     private function readFromFile()
     {
         return file_get_contents($this->pathToFile);
+
     }
 
     private function decodeData()
     {
         return json_decode($this->readFromFile(),true);
+    }
+
+    private function convertToString($value)
+    {
+        switch ($value) {
+            case is_array($value):
+                return implode(' ', $value);
+                break;
+            case is_object($value):
+                return serialize($value);
+                break;
+            default:
+                return $value;
+        }
     }
 }
