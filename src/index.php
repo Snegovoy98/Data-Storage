@@ -6,17 +6,20 @@ use App\{InMemoryStorageData,JsonKeyValueStorage,YmlKeyValueStorage};
 
 $storage = new InMemoryStorageData();
 
-$storage->set('array',['style'=>'css','script'=>'js']);
+$storage->set('array', ['style'=>'css','script'=>'js']);
 
+$storage->get('array');
 
-echo $storage->get('array');
+$storageJson = new JsonKeyValueStorage('../data/storage.json');
 
+$storageJson->set('object', new YmlKeyValueStorage('../data/storage.yaml'));
 
+$storageJson->get('object');
 
+$storageYml = new YmlKeyValueStorage('../data/storage.yaml');
 
+$storageYml ->set('name', 'yra');
 
+$storageYml->clear();
 
-//$storageJson = new JsonKeyValueStorage('../data/storage.json');
-
-//$storageYml = new YmlKeyValueStorage('../data/storage.yaml');
-
+echo $storageYml->get('name');
