@@ -6,7 +6,8 @@ use App\KeyValueStorageInterface;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 
-class YmlKeyValueStorage implements KeyValueStorageInterface
+
+class YmlKeyValueStorage  implements KeyValueStorageInterface
 {
     private $storage = [];
     private $pathToFile;
@@ -24,20 +25,28 @@ class YmlKeyValueStorage implements KeyValueStorageInterface
 
     public function get(string $key)
     {
-        return $this->storage[$key] ?? 'key not found';
+        if ($this->has($key)) {
+            return $this->convertToString($this->storage[$key]);
+        } else {
+            return 'key not found';
+        }
     }
 
     public function has(string  $key):bool
     {
         $this->storage=$this->parseYmlInPHP();
-        return $this->storage[$key] ?? false;
+        if (isset($this->storage[$key])) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function remove(string $key):void
     {
         if ($this->has($key)) {
             unset($this->storage[$key]);
-            $fp =fopen($this->pathToFile,'w+');
+            $fp = fopen($this->pathToFile,'w+');
             foreach ($this->storage as $key_data => $data) {
                 if ($key_data == $key) {
                     unset($key_data, $data);
@@ -50,7 +59,7 @@ class YmlKeyValueStorage implements KeyValueStorageInterface
     public function clear():void
     {
         $this->storage =[];
-        $fp =fopen($this->pathToFile,'w+');
+        $fp = fopen($this->pathToFile,'w+');
         foreach ($this->storage as $key_data => $data) {
                 unset($key_data, $data);
         }
@@ -71,4 +80,18 @@ class YmlKeyValueStorage implements KeyValueStorageInterface
     {
       return Yaml::parseFile($this->pathToFile);
     }
+    private function convertToString($value)
+    {
+        switch ($value) {
+            case is_array($value):
+                return implode(' ', $value);
+                break;
+            case is_object($value):
+                return serialize($value);
+                break;
+            default:
+                return $value;
+        }
+    }
+
 }
