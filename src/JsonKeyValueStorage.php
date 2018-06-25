@@ -43,7 +43,7 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     public function remove(string $key):void
     {
         if ($this->has($key)) {
-            $content=$this->decodeData();
+            $content = $this->decodeData();
             foreach ($content as $data_key => $value) {
                 if ($data_key == $key) {
                     unset($this->storage[$key]);
@@ -56,8 +56,9 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     public function clear():void
     {
         $this->storage=[];
-        $this->writeToFile();
-
+        $fp = fopen($this->pathToFile,'w+');
+        ftruncate($fp, filesize($this->pathToFile));
+        fclose($fp);
     }
 
     private function encodeData(array $array)
