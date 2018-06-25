@@ -17,7 +17,7 @@ class InMemoryStorageData implements KeyValueStorageInterface
     public function get(string $key)
     {
        if ($this->has($key)) {
-          return $this->convertToString($this->storage[$key]);
+          return $this->storage[$key];
        } else {
            return 'key not found';
        }
@@ -42,19 +42,5 @@ class InMemoryStorageData implements KeyValueStorageInterface
     public function clear() :void
     {
          $this->storage=[];
-    }
-
-    private function convertToString($value)
-    {
-        switch ($value) {
-            case is_array($value):
-                return implode(' ', $value);
-                break;
-            case is_object($value):
-                return serialize($value);
-                break;
-            default:
-                return $value;
-        }
     }
 }

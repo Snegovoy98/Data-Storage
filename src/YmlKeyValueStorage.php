@@ -20,13 +20,13 @@ class YmlKeyValueStorage  implements KeyValueStorageInterface
     public function set(string  $key, $value):void
     {
         $this->storage[$key] = $value;
-        $this->writeToFile($this->storage);
+        $this->writeToFile($this->storage,'r+');
     }
 
     public function get(string $key)
     {
         if ($this->has($key)) {
-            return $this->convertToString($this->storage[$key]);
+            return $this->storage[$key];
         } else {
             return 'key not found';
         }
@@ -45,25 +45,20 @@ class YmlKeyValueStorage  implements KeyValueStorageInterface
     public function remove(string $key):void
     {
         if ($this->has($key)) {
-            unset($this->storage[$key]);
-            $fp = fopen($this->pathToFile,'w+');
-            foreach ($this->storage as $key_data => $data) {
-                if ($key_data == $key) {
-                    unset($key_data, $data);
+            $content=$this->parseYmlInPHP();
+            foreach ($content as $data_key => $value) {
+                if ($data_key == $key) {
+                    unset($this->storage[$key]);
+                    $this->writeToFile($this->storage,'w+');
                 }
             }
-            fclose($fp);
         }
     }
 
     public function clear():void
     {
         $this->storage =[];
-        $fp = fopen($this->pathToFile,'w+');
-        foreach ($this->storage as $key_data => $data) {
-                unset($key_data, $data);
-        }
-        fclose($fp);
+        $this->writeToFile(['']);
     }
 
     private function dumpInYml(array $array)
@@ -71,27 +66,15 @@ class YmlKeyValueStorage  implements KeyValueStorageInterface
        return Yaml::dump($array,1);
     }
 
-    private function writeToFile(array $array):void
+    private function writeToFile(array $array, $flag):void
     {
-        file_put_contents($this->pathToFile, $this->dumpInYml($array));
+        $fp = fopen($this->pathToFile, $flag);
+        fwrite($fp, $this->dumpInYml($array), strlen($this->dumpInYml($array)));
+        fclose($fp);
     }
 
     private function parseYmlInPHP()
     {
       return Yaml::parseFile($this->pathToFile);
     }
-    private function convertToString($value)
-    {
-        switch ($value) {
-            case is_array($value):
-                return implode(' ', $value);
-                break;
-            case is_object($value):
-                return serialize($value);
-                break;
-            default:
-                return $value;
-        }
-    }
-
 }

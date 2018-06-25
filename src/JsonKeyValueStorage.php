@@ -3,6 +3,7 @@
 namespace App;
 
 use App\KeyValueStorageInterface;
+use \SplFixedArray;
 
 class JsonKeyValueStorage implements KeyValueStorageInterface
 {
@@ -17,13 +18,13 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     public function set(string $key, $value):void
     {
         $this->storage[$key] = $value;
-       $this->writeToFile($this->storage);
+       $this->writeToFile($this->storage,'r+');
     }
 
     public function get(string $key)
     {
          if ($this->has($key)) {
-             return $this->convertToString($this->storage[$key]);
+             return $this->storage[$key];
          } else {
              return 'key not found';
          }
@@ -31,8 +32,7 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
 
     public function has(string $key):bool
     {
-
-        $this->storage=$this->decodeData();
+        $this->storage = $this->decodeData();
        if (isset($this->storage[$key])) {
             return true;
        } else {
@@ -43,25 +43,21 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     public function remove(string $key):void
     {
         if ($this->has($key)) {
-            unset($this->storage[$key]);
-            $fp = fopen($this->pathToFile,'w+');
-            foreach ($this->storage as $key_data => $data) {
-                if ($key_data == $key) {
-                    unset($key_data, $data);
+            $content=$this->decodeData();
+            foreach ($content as $data_key => $value) {
+                if ($data_key == $key) {
+                    unset($this->storage[$key]);
+                   $this->writeToFile($this->storage,'w+');
                 }
             }
-            fclose($fp);
         }
     }
 
     public function clear():void
     {
         $this->storage=[];
-        $fp = fopen($this->pathToFile,'w+');
-        foreach ($this->storage as $key_data => $data) {
-                unset($key_data, $data);
-        }
-        fclose($fp);
+
+
     }
 
     private function encodeData(array $array)
@@ -69,33 +65,27 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
         return json_encode($array);
     }
 
-    private function writeToFile(array $array)
+    private function writeToFile(array $array, $flag=''):void
     {
-        file_put_contents($this->pathToFile, $this->encodeData($array));
+        $fp = fopen($this->pathToFile, $flag);
+        fwrite($fp, $this->encodeData($array), strlen($this->encodeData($array)));
+        fclose($fp);
     }
 
     private function readFromFile()
     {
-        return file_get_contents($this->pathToFile);
-
+        $fp = fopen($this->pathToFile,'r');
+        if (filesize($this->pathToFile) > 0) {
+        $content = fread($fp, filesize($this->pathToFile));
+        fclose($fp);
+        return $content;
+        } else {
+            return 'file is empty';
+        }
     }
 
     private function decodeData()
     {
         return json_decode($this->readFromFile(),true);
-    }
-
-    private function convertToString($value)
-    {
-        switch ($value) {
-            case is_array($value):
-                return implode(' ', $value);
-                break;
-            case is_object($value):
-                return serialize($value);
-                break;
-            default:
-                return $value;
-        }
     }
 }
