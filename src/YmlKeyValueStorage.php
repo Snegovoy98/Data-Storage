@@ -58,7 +58,7 @@ class YmlKeyValueStorage  implements KeyValueStorageInterface
     public function clear():void
     {
         $this->storage =[];
-        $this->writeToFile(['']);
+        $this->writeToFile([],'w+');
     }
 
     private function dumpInYml(array $array)

@@ -12,7 +12,6 @@ $storage->get('array');
 
 $storageJson = new JsonKeyValueStorage('../data/storage.json');
 
-
 $storageYml = new YmlKeyValueStorage('../data/storage.yaml');
 
 $storageYml->remove('surname');

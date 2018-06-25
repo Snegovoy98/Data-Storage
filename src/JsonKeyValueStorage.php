@@ -56,7 +56,7 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
     public function clear():void
     {
         $this->storage=[];
-
+        $this->writeToFile();
 
     }
 
@@ -65,7 +65,7 @@ class JsonKeyValueStorage implements KeyValueStorageInterface
         return json_encode($array);
     }
 
-    private function writeToFile(array $array, $flag=''):void
+    private function writeToFile(array $array, $flag):void
     {
         $fp = fopen($this->pathToFile, $flag);
         fwrite($fp, $this->encodeData($array), strlen($this->encodeData($array)));
